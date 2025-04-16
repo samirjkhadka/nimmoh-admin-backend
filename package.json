@@ -1,0 +1,20 @@
+{
+  "name": "nimmoh-admin-backend",
+  "version": "1.0.0",
+  "description": "admin panel backend api",
+  "homepage": "https://github.com/samirjkhadka/nimmoh-admin-backend#readme",
+  "bugs": {
+    "url": "https://github.com/samirjkhadka/nimmoh-admin-backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samirjkhadka/nimmoh-admin-backend.git"
+  },
+  "license": "ISC",
+  "author": "samir j khadka",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
