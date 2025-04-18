@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const transporter = require('../config/mail');
 const { passwordResetEmail, passwordChangedEmail } = require('../utils/emailTemplates');
 const { JWT_SECRET, TOKEN_EXPIRY, BASE_URL } = require('../config/jwt');
+const sendResponse = require('../utils/responseUtils');
 
 // Helper function to get user by email
 const getUserByEmail = async (email) => {
@@ -23,9 +24,12 @@ exports.login = async (req, res) => {
   const ip = req.ip;
   const platform = req.headers['user-agent'] || 'unknown';
 
+
+
   try {
     // Get user from database
     const user = await getUserByEmail(email);
+  
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -35,8 +39,10 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Account is deactivated' });
     }
 
+
+    console.log(user.password)
     // Verify password
-    const validPassword = await bcrypt.compare(password, user.password_hash);
+    const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -121,12 +127,14 @@ exports.verify2FA = async (req, res) => {
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 24); // 24 hours from now
 
+ 
     await pool.query(
       `INSERT INTO login_sessions 
        (user_id, token, expires_at, source_ip, source_platform) 
        VALUES ($1, $2, $3, $4, $5)`,
       [user.id, jwtToken, expiresAt, ip, platform]
     );
+
 
     // If first login, require password change
     if (user.is_first_login) {
@@ -314,7 +322,7 @@ exports.changePassword = async (req, res) => {
     const user = result.rows[0];
 
     // Verify current password
-    const validPassword = await bcrypt.compare(currentPassword, user.password_hash);
+    const validPassword = await bcrypt.compare(currentPassword, user.password);
     if (!validPassword) {
       return res.status(401).json({ message: 'Current password is incorrect' });
     }
@@ -324,7 +332,7 @@ exports.changePassword = async (req, res) => {
 
     // Update user password
     await pool.query(
-      'UPDATE admin_users SET password_hash = $1, is_first_login = false WHERE id = $2',
+      'UPDATE admin_users SET password = $1, is_first_login = false WHERE id = $2',
       [hashedPassword, userId]
     );
 
@@ -340,7 +348,7 @@ exports.changePassword = async (req, res) => {
     // Log activity
     await pool.query(
       `INSERT INTO user_activity_logs 
-       (user_id, action, description, source_ip, source_platform) 
+       (user_id, action, description, source_ip, platform) 
        VALUES ($1, $2, $3, $4, $5)`,
       [
         userId,
@@ -351,8 +359,13 @@ exports.changePassword = async (req, res) => {
       ]
     );
 
-    return res.status(200).json({ 
-      message: 'Password has been changed successfully' 
+    return sendResponse (res, 'success', 'Password changed successfully', 200, {
+      user:{
+        id: user.id,
+        name: user.name,
+      email: user.email, role: user.role},
+   
+    
     });
   } catch (error) {
     console.error('Change password error:', error);

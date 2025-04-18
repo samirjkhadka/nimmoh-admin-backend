@@ -27,7 +27,7 @@ exports.authenticate = async (req, res, next) => {
 
     // Check if session is valid
     const sessionResult = await pool.query(
-      'SELECT * FROM login_sessions WHERE token = $1 AND is_active = true AND expires_at > NOW()',
+      'SELECT * FROM login_sessions WHERE token = $1  AND expires_at > NOW()',
       [token]
     );
 

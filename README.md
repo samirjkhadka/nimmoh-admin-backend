@@ -36,3 +36,50 @@ nimmoh-backend/
 ├── server.js                 # Server start
 ├── package.json
 └── README.md                 # Project structure and setup docs
+
+success Response
+{
+  "status": "success",
+  "message": "Password has been changed successfully",
+  "statusCode": 200,
+  "data": {
+    "user": {
+      "id": "9748bbdc-b1d6-4a98-85a8-c16ca648beb6",
+      "email": "user@example.com",
+      "role": "admin",
+      "firstLogin": false
+    },
+    "token": "jwt_token_string_here",
+    "metadata": {
+      "timestamp": "2025-04-18T15:30:00Z",
+      "action": "Password change"
+    }
+  }
+}
+
+Error Response
+{
+  "status": "error",
+  "message": "Invalid token",
+  "statusCode": 400,
+  "errorDetails": {
+    "code": "INVALID_TOKEN",
+    "description": "The provided token is not valid or has expired"
+  },
+  "metadata": {
+    "timestamp": "2025-04-18T15:30:00Z",
+    "action": "Token validation"
+  }
+}
+
+
+Validation/Info Response:
+{
+  "status": "info",
+  "message": "First login detected. Please change your password.",
+  "statusCode": 202,
+  "metadata": {
+    "timestamp": "2025-04-18T15:30:00Z",
+    "action": "First login"
+  }
+}
