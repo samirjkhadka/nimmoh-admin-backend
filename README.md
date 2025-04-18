@@ -83,3 +83,23 @@ Validation/Info Response:
     "action": "First login"
   }
 }
+
+
+Request Payload
+Maker/checker
+
+{
+  "userId": 7,
+  "updateType": "change_role",
+  "updatePayload": {
+    "newRole": "checker"
+  }
+}
+OR
+{
+  "userId": 5,
+  "updateType": "block",
+  "updatePayload": {
+    "reason": "Violation of policy"
+  }
+}
