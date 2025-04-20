@@ -27,6 +27,7 @@ nimmoh-backend/
 │   ├── emailTemplates.js     # Mail content generators
 │   ├── passwordUtils.js      # Password hash/compare utils
 │   ├── jwtUtils.js           # JWT sign/verify utils
+|   |--- responseUtils.js     # common response   
 │   └── timeUtils.js          # Inactivity timeout checker
 ├── logs/
 │   └── activity.log          # File-based logs (optional backup)
